@@ -1,0 +1,17 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.6
+pydantic-settings==2.7.1
+python-dotenv==1.0.1
+
+# DB
+psycopg[binary]==3.2.5
+
+# Embeddings / RAG
+sentence-transformers==3.3.1
+numpy==1.26.4
+
+# LLM
+openai==1.60.1
+
+

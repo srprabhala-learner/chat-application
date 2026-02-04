@@ -1,0 +1,265 @@
+{
+  "examples": [
+    {
+      "question": "Can you list the application names and the roles that have access to these applications?",
+      "sql": "SELECT DISTINCT a.name AS application_name, a.code AS application_code, fr.name AS role_name, fr.code AS role_code, fr.category AS role_category FROM catalog.application a JOIN entitlement.policy_rule pr ON pr.application_id = a.id JOIN entitlement.policy_set ps ON ps.id = pr.policy_set_id JOIN entitlement.policy_scope psc ON psc.policy_set_id = ps.id JOIN identity.functional_role fr ON fr.id = psc.role_id WHERE psc.role_id IS NOT NULL AND pr.grant_type = 'ALLOW' ORDER BY a.name, fr.name LIMIT 200;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "catalog.application",
+        "entitlement.policy_rule",
+        "entitlement.policy_set",
+        "entitlement.policy_scope",
+        "identity.functional_role"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-29T20:00:00.000000",
+      "execution_time_ms": 0,
+      "row_count": 0
+    },
+    {
+      "question": "what is the name of user whose username is user00001",
+      "sql": "SELECT first_name, last_name FROM identity.user_account WHERE username = 'user00001' LIMIT 1;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "identity.user_account"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-29T17:48:23.727930",
+      "execution_time_ms": 22.19247817993164,
+      "row_count": 1
+    },
+    {
+      "question": "to which department does username user00001 belong to ?",
+      "sql": "SELECT ou.code AS department_code, ou.name AS department_name FROM identity.user_account u JOIN core.organization_unit ou ON u.primary_org_unit_id = ou.id WHERE u.username = 'user00001' LIMIT 1;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "identity.user_account",
+        "core.organization_unit"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-29T17:48:58.036626",
+      "execution_time_ms": 19.520282745361328,
+      "row_count": 1
+    },
+    {
+      "question": "What is the region of user name User1Demo ?",
+      "sql": "SELECT r.code AS region_code, r.name AS region_name FROM identity.user_account u JOIN core.organization_unit ou ON u.primary_org_unit_id = ou.id JOIN core.region r ON ou.region_id = r.id WHERE u.username = 'User1Demo' LIMIT 1;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "identity.user_account",
+        "core.region",
+        "core.organization_unit"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-29T17:49:57.072205",
+      "execution_time_ms": 35.410404205322266,
+      "row_count": 0
+    },
+    {
+      "question": "What is the region of user name User1 Demo ?",
+      "sql": "SELECT r.code AS region_code, r.name AS region_name FROM identity.user_account u JOIN core.organization_unit ou ON u.primary_org_unit_id = ou.id JOIN core.region r ON ou.region_id = r.id WHERE u.username = 'User1 Demo' LIMIT 1;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "identity.user_account",
+        "core.region",
+        "core.organization_unit"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-29T17:50:31.033709",
+      "execution_time_ms": 26.82352066040039,
+      "row_count": 0
+    },
+    {
+      "question": "what is the region of the user whose email is user00001@acme.example.com",
+      "sql": "SELECT r.code AS region_code, r.name AS region_name FROM identity.user_account u JOIN core.organization_unit ou ON u.primary_org_unit_id = ou.id JOIN core.region r ON ou.region_id = r.id WHERE u.email = 'user00001@acme.example.com' LIMIT 1;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "identity.user_account",
+        "core.region",
+        "core.organization_unit"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-29T17:50:57.055172",
+      "execution_time_ms": 21.4691162109375,
+      "row_count": 1
+    },
+    {
+      "question": "what is the employment type of user name user00001",
+      "sql": "SELECT u.employment_type FROM identity.user_account u WHERE u.username = 'user00001' LIMIT 1;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "identity.user_account"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-29T17:54:13.505263",
+      "execution_time_ms": 17.787456512451172,
+      "row_count": 1
+    },
+    {
+      "question": "List the users who belong to DEPT_3",
+      "sql": "SELECT u.id, u.first_name, u.last_name FROM identity.user_account u JOIN core.organization_unit ou ON u.primary_org_unit_id = ou.id WHERE ou.code = 'DEPT_3' LIMIT 100;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "identity.user_account",
+        "core.organization_unit"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-29T17:58:36.999688",
+      "execution_time_ms": 33.971548080444336,
+      "row_count": 100
+    },
+    {
+      "question": "what are the user permissions of user name user00001",
+      "sql": "SELECT a.code AS app_code, a.name AS app_name, ue.status, ue.effective_from, ue.effective_to FROM entitlement.user_entitlement ue JOIN identity.user_account u ON u.id = ue.user_id JOIN catalog.application a ON a.id = ue.application_id WHERE u.username = 'user00001' AND ue.status = 'ACTIVE' LIMIT 200",
+      "intent": "generic_sql",
+      "tables_used": [
+        "identity.user_account",
+        "entitlement.user_entitlement",
+        "catalog.application"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-29T18:00:23.573713",
+      "execution_time_ms": 27.826786041259766,
+      "row_count": 5
+    },
+    {
+      "question": "List the employment status of each user belonging to DEPT_3",
+      "sql": "SELECT u.employment_type FROM identity.user_account u JOIN core.organization_unit ou ON u.primary_org_unit_id = ou.id WHERE ou.code = 'DEPT_3' LIMIT 100;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "identity.user_account",
+        "core.organization_unit"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-29T18:03:59.991066",
+      "execution_time_ms": 29.69813346862793,
+      "row_count": 100
+    },
+    {
+      "question": "List the employment status of each user belonging to DEPT_5",
+      "sql": "SELECT u.employment_type FROM identity.user_account u JOIN core.organization_unit ou ON u.primary_org_unit_id = ou.id WHERE ou.code = 'DEPT_5' LIMIT 100;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "identity.user_account",
+        "core.organization_unit"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-29T18:04:43.632532",
+      "execution_time_ms": 26.33213996887207,
+      "row_count": 100
+    },
+    {
+      "question": "list all the business critical applications along with their app code",
+      "sql": "SELECT a.code AS app_code, a.name AS app_name FROM catalog.application a JOIN catalog.application_category ac ON a.category_id = ac.id WHERE ac.code = 'BUSINESS' LIMIT 100;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "catalog.application_category",
+        "catalog.application"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-29T18:07:36.252085",
+      "execution_time_ms": 22.141218185424805,
+      "row_count": 20
+    },
+    {
+      "question": "what are the user permissions of user name user00001",
+      "sql": "SELECT a.code AS app_code, a.name AS app_name, ue.status, ue.effective_from, ue.effective_to FROM entitlement.user_entitlement ue JOIN identity.user_account u ON u.id = ue.user_id JOIN catalog.application a ON a.id = ue.application_id WHERE u.username = 'user00001' AND ue.status = 'ACTIVE' LIMIT 200;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "identity.user_account",
+        "catalog.application",
+        "entitlement.user_entitlement"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-29T19:05:01.049959",
+      "execution_time_ms": 27.112960815429688,
+      "row_count": 5
+    },
+    {
+      "question": "to which department does username user00001 belong to ?",
+      "sql": "SELECT ou.code AS department_code, ou.name AS department_name FROM identity.user_account u JOIN core.organization_unit ou ON u.primary_org_unit_id = ou.id WHERE u.username = 'user00001' LIMIT 1;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "core.organization_unit",
+        "identity.user_account"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-29T19:05:39.648321",
+      "execution_time_ms": 29.614686965942383,
+      "row_count": 1
+    },
+    {
+      "question": "what are the user permissions of user name user00001",
+      "sql": "SELECT a.code AS app_code, a.name AS app_name, ue.status, ue.effective_from, ue.effective_to FROM entitlement.user_entitlement ue JOIN identity.user_account u ON u.id = ue.user_id JOIN catalog.application a ON a.id = ue.application_id WHERE u.username = 'user00001' AND ue.status = 'ACTIVE' LIMIT 200;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "catalog.application",
+        "identity.user_account",
+        "entitlement.user_entitlement"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-30T17:22:05.848627",
+      "execution_time_ms": 34.49749946594238,
+      "row_count": 5
+    },
+    {
+      "question": "List the users who belong to DEPT_3",
+      "sql": "SELECT u.id, u.first_name, u.last_name FROM identity.user_account u JOIN core.organization_unit ou ON u.primary_org_unit_id = ou.id WHERE ou.code = 'DEPT_3' LIMIT 100;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "identity.user_account",
+        "core.organization_unit"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-30T17:23:38.225720",
+      "execution_time_ms": 34.535884857177734,
+      "row_count": 100
+    },
+    {
+      "question": "what are the user permissions of user name user00001",
+      "sql": "SELECT a.code AS app_code, a.name AS app_name, ue.status, ue.effective_from, ue.effective_to FROM entitlement.user_entitlement ue JOIN identity.user_account u ON u.id = ue.user_id JOIN catalog.application a ON a.id = ue.application_id WHERE u.username = 'user00001' AND ue.status = 'ACTIVE' LIMIT 200;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "catalog.application",
+        "identity.user_account",
+        "entitlement.user_entitlement"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-30T17:37:12.047286",
+      "execution_time_ms": 30.391454696655273,
+      "row_count": 5
+    },
+    {
+      "question": "to which department does username user00001 belong to ?",
+      "sql": "SELECT ou.code AS department_code, ou.name AS department_name FROM identity.user_account u JOIN core.organization_unit ou ON u.primary_org_unit_id = ou.id WHERE u.username = 'user00001' LIMIT 1;",
+      "intent": "generic_sql",
+      "tables_used": [
+        "identity.user_account",
+        "core.organization_unit"
+      ],
+      "success": true,
+      "error_message": null,
+      "created_at": "2026-01-30T17:38:18.266741",
+      "execution_time_ms": 28.67293357849121,
+      "row_count": 1
+    }
+  ],
+  "updated_at": "2026-01-30T17:38:18.266970"
+}

@@ -1,0 +1,24 @@
+{
+  "users_in_dept_for_app": {
+    "description": "Active users in a given department who have access to a specific application.",
+    "sql": "SELECT DISTINCT\n  u.id,\n  u.username,\n  u.email,\n  u.first_name,\n  u.last_name,\n  ou.code AS department_code,\n  r.code  AS region_code\nFROM identity.user_account u\nJOIN core.organization_unit ou ON ou.id = u.primary_org_unit_id\nLEFT JOIN core.region r ON r.id = ou.region_id\nJOIN catalog.application a ON a.code = %(app_code)s\nJOIN catalog.application_availability aa ON aa.application_id = a.id\n  AND aa.organization_unit_id = ou.id\nWHERE ou.code = %(dept_code)s\n  AND aa.availability_status = 'AVAILABLE'\n  AND (aa.effective_to IS NULL OR aa.effective_to >= CURRENT_DATE)\n  AND u.status = 'ACTIVE'\nORDER BY u.username\nLIMIT 200;"
+  },
+  "users_in_dept": {
+    "description": "Active users in a given department, regardless of application.",
+    "sql": "SELECT\n  u.id,\n  u.username,\n  u.email,\n  u.first_name,\n  u.last_name,\n  ou.code AS department_code,\n  r.code  AS region_code\nFROM identity.user_account u\nJOIN core.organization_unit ou ON ou.id = u.primary_org_unit_id\nLEFT JOIN core.region r ON r.id = ou.region_id\nWHERE ou.code = %(dept_code)s\n  AND u.status = 'ACTIVE'\nORDER BY u.username\nLIMIT 200;"
+  },
+  "departments_for_app": {
+    "description": "Departments that have access to a given application.",
+    "sql": "SELECT DISTINCT\n  ou.code AS department_code,\n  ou.name AS department_name,\n  r.code  AS region_code,\n  aa.availability_status\nFROM catalog.application a\nJOIN catalog.application_availability aa ON aa.application_id = a.id\nJOIN core.organization_unit ou ON ou.id = aa.organization_unit_id\nLEFT JOIN core.region r ON r.id = ou.region_id\nWHERE a.code = %(app_code)s\n  AND aa.availability_status = 'AVAILABLE'\n  AND (aa.effective_to IS NULL OR aa.effective_to >= CURRENT_DATE)\nORDER BY r.code, ou.code\nLIMIT 200;"
+  },
+  "app_metadata": {
+    "description": "Metadata for an application such as criticality and lifecycle_state.",
+    "sql": "SELECT\n  a.code,\n  a.name,\n  a.criticality,\n  a.lifecycle_state\nFROM catalog.application a\nWHERE a.code = %(app_code)s;"
+  },
+  "apps_for_dept": {
+    "description": "Applications available to a given department.",
+    "sql": "SELECT DISTINCT\n  a.code AS app_code,\n  a.name AS app_name,\n  a.criticality,\n  a.lifecycle_state,\n  aa.availability_status,\n  r.code AS region_code\nFROM catalog.application a\nJOIN catalog.application_availability aa ON aa.application_id = a.id\nJOIN core.organization_unit ou ON ou.id = aa.organization_unit_id\nLEFT JOIN core.region r ON r.id = ou.region_id\nWHERE ou.code = %(dept_code)s\n  AND aa.availability_status = 'AVAILABLE'\n  AND (aa.effective_to IS NULL OR aa.effective_to >= CURRENT_DATE)\nORDER BY a.code\nLIMIT 200;"
+  }
+}
+
+
